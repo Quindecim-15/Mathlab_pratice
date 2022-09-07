@@ -1,5 +1,5 @@
-% Ô¤Éè±äÁ¿¼°×¼±¸¹¤×÷
-cd('D:\Work\Éè±¸¹ÜÀí(Éè±¸°áÇ¨)\Â¼Èë');
+% é¢„è®¾å˜é‡åŠå‡†å¤‡å·¥ä½œ
+cd('D:\Work\è®¾å¤‡ç®¡ç†(è®¾å¤‡æ¬è¿)\å½•å…¥');
 [file_list,path] = uigetfile(...
 {'*.txt',...
     'Text Files (*.txt)'},...
@@ -9,15 +9,15 @@ cd('D:\Work\Éè±¸¹ÜÀí(Éè±¸°áÇ¨)\Â¼Èë');
      file_list = {file_list};
  end
  
- slCharacterEncoding('UTF-8');%½âÂë·½Ê½¸ÄÎªUTF-8,·ñÔò¶ÁÈ¡ÖĞÎÄ»áÂÒÂë
+ slCharacterEncoding('UTF-8');%è§£ç æ–¹å¼æ”¹ä¸ºUTF-8,å¦åˆ™è¯»å–ä¸­æ–‡ä¼šä¹±ç 
  for fi = 1 : length(file_list)
     txtff = fullfile(path,file_list{fi});
-    fun = @(s)regexp(s,'\s*','split');%¶¨ÒåÄäÃû¸ñÊ½É¸Ñ¡º¯Êı£¬Match regular expressionº¯Êı£¬ÓÃÓÚ·ÖÀë³ö±»ÈÎÒâ³¤¶È¿Õ¸ñ·Ö¸îµÄ×Ö·û²¢½«Æä·µ»Ø   
-    [fid,msg] = fopen(txtff,'rt');% fopenÓÃÓÚ»ñÈ¡fileID£¬msgÓÃÓÚ´ò¿ª²»ÕıÈ·ÎÄ¼şÊ±µÄµ¯´°¾¯¸æ
-    assert(fid>=3,msg)%ÎÄ¼şÀàĞÍ´íÎóµ¯´°¾¯¸æ
+    fun = @(s)regexp(s,'\s*','split');%å®šä¹‰åŒ¿åæ ¼å¼ç­›é€‰å‡½æ•°ï¼ŒMatch regular expressionå‡½æ•°ï¼Œç”¨äºåˆ†ç¦»å‡ºè¢«ä»»æ„é•¿åº¦ç©ºæ ¼åˆ†å‰²çš„å­—ç¬¦å¹¶å°†å…¶è¿”å›   
+    [fid,msg] = fopen(txtff,'rt');% fopenç”¨äºè·å–fileIDï¼Œmsgç”¨äºæ‰“å¼€ä¸æ­£ç¡®æ–‡ä»¶æ—¶çš„å¼¹çª—è­¦å‘Š
+    assert(fid>=3,msg)%æ–‡ä»¶ç±»å‹é”™è¯¯å¼¹çª—è­¦å‘Š
     
-    % ½¨Á¢Ôª×écell²¢´¢´æÊı¾İ
-    out = {};%#ok<NASGU> %ÉèÁ¢Ôª×écell
+    % å»ºç«‹å…ƒç»„cellå¹¶å‚¨å­˜æ•°æ®
+    out = {};%#ok<NASGU> %è®¾ç«‹å…ƒç»„cell
     out = fun(fgetl(fid));
     out_rn = 2;
     while ~feof(fid)
@@ -25,14 +25,14 @@ cd('D:\Work\Éè±¸¹ÜÀí(Éè±¸°áÇ¨)\Â¼Èë');
         out(out_rn,1) = str(1,1);
         out(out_rn,2) = str(1,2);
         out(out_rn,3) = str(1,3);
-        out_rn = out_rn + 1;%À©Õ¹Ôª×écell
+        out_rn = out_rn + 1;%æ‰©å±•å…ƒç»„cell
     end
     fclose(fid);
     
-    % Éú³É½á¹û
-    cd('D:\Work\Éè±¸¹ÜÀí(Éè±¸°áÇ¨)\Í³¼Æ');
-    filename = cell2mat(strcat(regexp(file_list{fi},'.*\.','match'), 'xlsx'));%ºÏ³ÉÎÄ¼şÃû£¬regexpº¯Êı·µ»ØµÄÊÇ1*1Ôª×é
-    copyfile('ÊµÑéÊÒºÄ²ÄÀàÍ³¼Æ±í_Ä£°å.xlsx',filename);
+    % ç”Ÿæˆç»“æœ
+    cd('D:\Work\è®¾å¤‡ç®¡ç†(è®¾å¤‡æ¬è¿)\ç»Ÿè®¡');
+    filename = cell2mat(strcat(regexp(file_list{fi},'.*\.','match'), 'xlsx'));%åˆæˆæ–‡ä»¶åï¼Œregexpå‡½æ•°è¿”å›çš„æ˜¯1*1å…ƒç»„
+    copyfile('å®éªŒå®¤è€—æç±»ç»Ÿè®¡è¡¨_æ¨¡æ¿.xlsx',filename);
     xlrowl = 1;   
     [m,n] = size(out);
     for oi = 1 : m
