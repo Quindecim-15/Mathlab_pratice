@@ -35,7 +35,7 @@ cd('D:\Work\设备管理(设备搬迁)\录入');
     copyfile('实验室耗材类统计表_模板.xlsx',filename);
     xlrowl = 1;   
     [m,n] = size(out);
-    for oi = 1 : m
+    for oi = 1 : m %直接统计不作额外筛分
         xlrowl = xlrowl + 1;                                   
         xlrange_A = char(strcat('A',string(xlrowl)));
         xlrange_B = char(strcat('B',string(xlrowl)));
