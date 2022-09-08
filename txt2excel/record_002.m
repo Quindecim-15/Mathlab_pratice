@@ -45,4 +45,4 @@ cd('D:\Work\设备管理(设备搬迁)\录入');
         xlswrite(filename,out(oi,3),1,xlrange_C);
     end                     
  end
- disp(' reocrd.m finished ')
+ disp(' reocrd_002.m finished ')
