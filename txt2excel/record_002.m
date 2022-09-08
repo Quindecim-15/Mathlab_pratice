@@ -1,4 +1,5 @@
 % 预设变量及准备工作
+slCharacterEncoding('GBK'); %恢复字符串解码的默认配置
 cd('D:\Work\设备管理(设备搬迁)\录入');
 [file_list,path] = uigetfile(...
 {'*.txt',...
@@ -45,6 +46,5 @@ cd('D:\Work\设备管理(设备搬迁)\录入');
         xlswrite(filename,out(oi,3),1,xlrange_C);
     end                     
  end
-slCharacterEncoding('GBK')
 disp(' reocrd_002.m finished ')
  
