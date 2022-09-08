@@ -1,5 +1,5 @@
 % 预设变量及准备工作
-slCharacterEncoding('GBK'); %恢复字符串解码的默认配置
+slCharacterEncoding('GBK'); %恢复字符串解码的默认配置，以可以读取中文路径
 cd('D:\Work\设备管理(设备搬迁)\录入');
 [file_list,path] = uigetfile(...
 {'*.txt',...
@@ -11,9 +11,9 @@ cd('D:\Work\设备管理(设备搬迁)\录入');
  end
  
  slCharacterEncoding('UTF-8');%解码方式改为UTF-8,否则读取中文会乱码
- for fi = 1 : length(file_list)
+ for fi = 1 : length(file_list)    
     txtff = fullfile(path,file_list{fi});
-    fun = @(s)regexp(s,'\s*','split');%定义匿名格式筛选函数，Match regular expression函数，用于分离出被任意长度空格分割的字符并将其返回   
+    fun = @(s)regexp(s,'\s+','split');%定义匿名格式筛选函数，Match regular expression函数，用于分离出被任意长度空格分割的字符并将其返回   
     [fid,msg] = fopen(txtff,'rt');% fopen用于获取fileID，msg用于打开不正确文件时的弹窗警告
     assert(fid>=3,msg)%文件类型错误弹窗警告
     
@@ -30,6 +30,25 @@ cd('D:\Work\设备管理(设备搬迁)\录入');
     end
     fclose(fid);
     
+    % 修改cell，将相同类型数据合并（增加数量，删去相同数据）
+    step = 1;
+    [m,n] = size(out); %#ok<ASGLU>   
+    search_count = 1;
+    while search_count <= m % 确保所有
+        [m,n] = size(out); %#ok<ASGLU> % 动态设置上界防止索引越界       
+        if strcmp(out(search_count,1),out(step,1)) && strcmp(out(search_count,2),out(step,2)) &&  step~= search_count           
+           out{search_count,3} = string(str2double(out(search_count,3)) + str2double(out(step,3)));           
+           out(step,:) = [];
+           step = 1;
+        else
+            step = step + 1;            
+        end
+        if step >= m
+            step = 1;
+            search_count = search_count + 1;
+        end
+    end
+    
     % 生成结果
     cd('D:\Work\设备管理(设备搬迁)\统计');
     filename = cell2mat(strcat(regexp(file_list{fi},'.*\.','match'), 'xlsx'));%合成文件名，regexp函数返回的是1*1元组
@@ -43,8 +62,8 @@ cd('D:\Work\设备管理(设备搬迁)\录入');
         xlrange_C = char(strcat('C',string(xlrowl)));
         xlswrite(filename,out(oi,1),1,xlrange_A);
         xlswrite(filename,out(oi,2),1,xlrange_B);
-        xlswrite(filename,out(oi,3),1,xlrange_C);
-    end                     
+        xlswrite(filename,str2double(out(oi,3)),1,xlrange_C);
+    end                        
  end
-disp(' reocrd_002.m finished ')
- 
+ cd('D:\Work\设备管理(设备搬迁)\录入');
+ disp(' reocrd.m finished ')
