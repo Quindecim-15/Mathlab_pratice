@@ -30,7 +30,7 @@ cd('D:\Work\设备管理(设备搬迁)\录入');
     end
     fclose(fid);
     
-    % 修改cell，将相同类型数据合并（增加数量，删去相同数据）
+    % 修改元组cell，将相同类型数据合并（增加数量，删去相同数据），无晒选
     step = 1;
     m = size(out,1); %#ok<ASGLU>   
     search_count = 1;
@@ -49,6 +49,9 @@ cd('D:\Work\设备管理(设备搬迁)\录入');
             search_count = search_count + 1;
         end
     end
+    
+    % 元组cell排序
+    out = out;
     
     % 生成结果
     cd('D:\Work\设备管理(设备搬迁)\统计');
