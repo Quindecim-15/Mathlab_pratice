@@ -32,10 +32,10 @@ cd('D:\Work\设备管理(设备搬迁)\录入');
     
     % 修改cell，将相同类型数据合并（增加数量，删去相同数据）
     step = 1;
-    [m,n] = size(out); %#ok<ASGLU>   
+    m = size(out,1); %#ok<ASGLU>   
     search_count = 1;
     while search_count <= m % 确保所有行数据都历过
-        [m,n] = size(out); %#ok<ASGLU> % 动态读取上界防止索引越界       
+        m = size(out,1); %#ok<ASGLU> % 动态读取上界防止索引越界       
         if strcmp(out(search_count,1),out(step,1)) && strcmp(out(search_count,2),out(step,2)) &&  step~= search_count           
            out{search_count,3} = string(str2double(out(search_count,3)) + str2double(out(step,3)));
            out{search_count,3} = char(out{search_count,3}); % cell{}大括号对应其储存内容，()小括号对应1*1元组，char会将数字转换为ascii码对应字符
@@ -54,7 +54,7 @@ cd('D:\Work\设备管理(设备搬迁)\录入');
     cd('D:\Work\设备管理(设备搬迁)\统计');
     filename = cell2mat(strcat(regexp(file_list{fi},'.*\.','match'), 'xlsx')); % 合成文件名，regexp函数返回的是1*1元组
     copyfile('实验室耗材类统计表_模板.xlsx',filename);
-    [m,n] = size(out);
+    m = size(out,1);
     xlrange_A = char(strcat('A2:','A',string(m)));
     xlrange_B = char(strcat('B2:','B',string(m)));
     xlrange_C = char(strcat('C2:','C',string(m)));
