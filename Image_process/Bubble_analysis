@@ -1,0 +1,88 @@
+%% Import your bubble image (attached file)
+defaultFileName = fullfile(cd, '*.*');
+[baseFileName, folder] = uigetfile(defaultFileName, 'Select an image file');
+if baseFileName == 0
+% User clicked the Cancel button.
+	return;
+end
+
+% Get the full filename, with path prepended.
+fullFileName = fullfile(folder, baseFileName);
+% Check if file exists.
+if ~exist(fullFileName, 'file')
+	% File doesn't exist -- didn't find it there.  Check the search path for it.
+	fullFileName = baseFileName; % No path this time.
+	if ~exist(fullFileName, 'file')
+		% Still didn't find it.  Alert user.
+		errorMessage = sprintf('Error: %s does not exist in the search path folders.', fullFileName);
+		uiwait(warndlg(errorMessage));
+		return;
+	end
+end
+
+% Read in the chosen image.
+I = imread(fullFileName);
+%% Piexls conversion
+calibration_figure = figure;
+subplot(1,2,1);
+imshow(I)
+axis on;
+title('Original Image', 'FontSize', 20);
+% Enlarge figure to full screen.
+set(gcf, 'units','normalized','outerposition',[0 0 1 1]);
+% Give a name to the title bar.
+set(gcf,'name','Calibration image ','numbertitle','off')
+% calibrationFactor = meters/pixels;
+% distanceInPic = distanceInPixels * calibrationFactor;
+% areaInSquarePic = areaInPixels * calibrationFactor ^ 2;
+[cx, cy, rgbValues, xi,yi] = improfile(1000);
+	% rgbValues is 1000x1x3.  Call Squeeze to get rid of the singleton dimension and make it 1000x3.
+rgbValues = squeeze(rgbValues);
+distanceInPixels = sqrt( (xi(2)-xi(1)).^2 + (yi(2)-yi(1)).^2);
+if length(xi) < 2
+		return;
+end
+% Plot the line.
+hold on; 
+lastDrawnHandle = plot(xi, yi, 'r-', 'LineWidth', 2);
+
+% Ask the user for the real-world distance.
+userPrompt = {'Enter real world units (e.g. 毫米):','Enter distance in those units:'};
+dialogTitle = 'Specify calibration information';
+numberOfLines = 1;
+def = {'毫米', '500'};
+answer = inputdlg(userPrompt, dialogTitle, numberOfLines, def);
+if isempty(answer)
+	return;
+end
+calibration.units = answer{1};
+calibration.distanceInPixels = distanceInPixels;
+calibration.distanceInUnits = str2double(answer{2});
+calibration.distancePerPixel = calibration.distanceInUnits / distanceInPixels;
+%% Binarize and remove non-target regions in the image
+Igray = rgb2gray(I);
+BW = imbinarize(Igray,0.6);
+% BW = imbinarize(Igray,'adaptive',...
+  % 'ForegroundPolarity','dark','Sensitivity',0.61);
+se = strel('disk',5);
+BW = imopen(BW,se);
+BW = imclearborder(BW);
+BW = bwareafilt(BW,[200 Inf]);
+%% Apply regionprops
+s = regionprops('table',BW,{'Area','Centroid','EquivDiameter'});
+%% Visualize the result
+L = bwlabel(BW);
+Lrgb = label2rgb(L);
+analysis_figure = figure;
+subplot(1,2,1)
+imshow(I)
+axis on;
+title('Original Image', 'FontSize', 20);
+% Give a name to the title bar.
+set(gcf,'name','Analysis image ','numbertitle','off')
+hold on
+scatter(s.Centroid(:,1),s.Centroid(:,2),'rx')
+subplot(1,2,2)
+imshow(Lrgb)
+axis on;
+title('Bubble Image', 'FontSize', 20);
