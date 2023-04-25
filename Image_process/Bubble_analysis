@@ -1,3 +1,9 @@
+% clear
+clc;    % Clear the command window.
+close all;  % Close all figures (except those of imtool.)
+imtool close all;  % Close all imtool figures.
+clear;  % Erase all existing variables.
+workspace;  % Make sure the workspace panel is showing.
 %% Import your bubble image (attached file)
 defaultFileName = fullfile(cd, '*.*');
 [baseFileName, folder] = uigetfile(defaultFileName, 'Select an image file');
@@ -32,11 +38,11 @@ title('Original Image', 'FontSize', 20);
 set(gcf, 'units','normalized','outerposition',[0 0 1 1]);
 % Give a name to the title bar.
 set(gcf,'name','Calibration image ','numbertitle','off')
-% calibrationFactor = meters/pixels;
-% distanceInPic = distanceInPixels * calibrationFactor;
-% areaInSquarePic = areaInPixels * calibrationFactor ^ 2;
+instructions = sprintf('点击鼠标左键选择起始点.\n点击鼠标右键 或 双击鼠标左键选择终点.\n\n之后将要求输入该红线的真实长度.');
+uiwait(msgbox(instructions));
+% drag a line as an ruler.
 [cx, cy, rgbValues, xi,yi] = improfile(1000);
-	% rgbValues is 1000x1x3.  Call Squeeze to get rid of the singleton dimension and make it 1000x3.
+% rgbValues is 1000x1x3.  Call Squeeze to get rid of the singleton dimension and make it 1000x3.
 rgbValues = squeeze(rgbValues);
 distanceInPixels = sqrt( (xi(2)-xi(1)).^2 + (yi(2)-yi(1)).^2);
 if length(xi) < 2
@@ -86,3 +92,6 @@ subplot(1,2,2)
 imshow(Lrgb)
 axis on;
 title('Bubble Image', 'FontSize', 20);
+s.Area = (s.Area).*(calibration.distancePerPixel)^2;
+s.EquivDiameter = (s.EquivDiameter).*(calibration.distancePerPixel);
+disp(s)
